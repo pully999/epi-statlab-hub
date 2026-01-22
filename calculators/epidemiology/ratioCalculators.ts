@@ -4,7 +4,7 @@ import { Category, CalculatorDefinition } from '../../types';
 import { computeRR, computeOR, formatPercent } from './utils';
 import * as ciUtils from '../confidenceIntervals/utils';
 
-export const riskRatioCalc: CalculatorDefinition<{ a: number, b: number, c: number, d: number }> = {
+export const riskRatioCalc: CalculatorDefinition<{ Exposed_cases: number, Unexposed_cases: number, Exposed_control: number, Unexposed_control: number }> = {
   metadata: {
     id: 'epi-risk-ratio',
     title: 'Risk Ratio (RR)',
@@ -16,7 +16,7 @@ export const riskRatioCalc: CalculatorDefinition<{ a: number, b: number, c: numb
     a: z.number().min(0), b: z.number().min(0),
     c: z.number().min(0), d: z.number().min(0)
   }),
-  examples: [{ a: 45, b: 55, c: 20, d: 80 }],
+  examples: [{ Exposed_cases: 45, Unexposed_cases: 55, Exposed_control: 20, Unexposed_control: 80 }],
   compute: (data) => {
     const res = computeRR(data);
     const rCode = `# Create 2x2 matrix\ntab <- matrix(c(${data.a}, ${data.c}, ${data.b}, ${data.d}), nrow = 2)\n\n# install.packages("epiR")\nlibrary(epiR)\nepi.2by2(tab, method = "cohort.count", conf.level = 0.95)`;
@@ -35,7 +35,7 @@ export const riskRatioCalc: CalculatorDefinition<{ a: number, b: number, c: numb
   }
 };
 
-export const oddsRatioCalc: CalculatorDefinition<{ a: number, b: number, c: number, d: number }> = {
+export const oddsRatioCalc: CalculatorDefinition<{ Exposed_cases: number, Unexposed_cases: number, Exposed_control: number, Unexposed_control: number }> = {
   metadata: {
     id: 'epi-odds-ratio',
     title: 'Odds Ratio (OR)',
@@ -47,7 +47,7 @@ export const oddsRatioCalc: CalculatorDefinition<{ a: number, b: number, c: numb
     a: z.number().min(0), b: z.number().min(0),
     c: z.number().min(0), d: z.number().min(0)
   }),
-  examples: [{ a: 70, b: 30, c: 40, d: 60 }],
+  examples: [{ Exposed_cases: 70, Unexposed_cases: 30, Exposed_control: 40, Unexposed_control: 60 }],
   compute: (data) => {
     const res = computeOR(data);
     const rCode = `# Odds Ratio via Fisher Test\ntab <- matrix(c(${data.a}, ${data.c}, ${data.b}, ${data.d}), nrow = 2)\nfisher.test(tab, conf.level = 0.95)\n\n# Woolf method via 'epiR'\n# library(epiR); epi.2by2(tab, method = "case-control")`;
